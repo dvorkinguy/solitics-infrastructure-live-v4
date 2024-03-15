@@ -100,7 +100,7 @@ Security Credentials generated for the user
 I'll use those credentials to create AWS local profile
 
 
-## Rub
+## Run
 
 terragrunt init
 terragrint run-all plan 
