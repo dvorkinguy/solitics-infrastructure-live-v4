@@ -1,3 +1,9 @@
+### Solution Simplification for Non Production
+At the end - Show the production git repo strategies created
+Pods - on
+
+## Start Here
+
 We''l switch using S3 Bucket and Dynamo DB table to lock our state. 
 This approach shuld be used most of the time especially when working in a team, 
 instead of relying on the local state.
@@ -102,6 +108,18 @@ I'll use those credentials to create AWS local profile
 
 ## Run
 
+In the project folder:
+
 terragrunt init
-terragrint run-all plan 
 terragrunt run-all apply
+
+aws eks update-kubeconfig --name dev-solitics-demo --region eu-west-2
+aws eks update-kubeconfig --name staging-solitics-demo --region eu-west-2
+
+aws eks describe-cluster --name dev-solitics-demo --region eu-west-2 --output json
+aws eks describe-cluster --name staging-solitics-demo --region eu-west-2 --output json
+
+kubectl apply -f deployment.yaml
+kubectl get pods
+kubectl describe pod nginx-xxxx
+
