@@ -60,3 +60,62 @@ aws eks update-kubeconfig --name staging-solitics-demo --region eu-west-2
 ### Conclusion
 
 This endeavor provided a profound learning experience in managing complex cloud infrastructures using Terraform and Terragrunt. Building the project from scratch is planned, to incorporate lessons learned and establish a foundation for a more streamlined and efficient infrastructure management process.
+
+
+## Project Directory Structure
+This section outlines the organization of the project's directories and files, detailing the setup for infrastructure management with Terraform and Terragrunt, as well as Kubernetes deployments.
+
+.
+├── infrastructure-live               # Live infrastructure configurations
+│   ├── backend.tf                    # Backend configuration for Terraform state
+│   ├── dev                           # Development environment configurations
+│   │   ├── eks                       # EKS specific configurations for development
+│   │   │   └── terragrunt.hcl        # Terragrunt configuration for EKS
+│   │   ├── env.hcl                   # Environment specific variables for development
+│   │   ├── kubernetes-addons         # Kubernetes add-ons for development
+│   │   │   └── terragrunt.hcl        # Terragrunt configuration for Kubernetes add-ons
+│   │   └── vpc                       # VPC configurations for development
+│   │       └── terragrunt.hcl        # Terragrunt configuration for VPC
+│   ├── provider.tf                   # Provider configuration for Terraform
+│   ├── staging                       # Staging environment configurations
+│   │   ├── eks                       # EKS specific configurations for staging
+│   │   │   └── terragrunt.hcl        # Terragrunt configuration for EKS
+│   │   ├── env.hcl                   # Environment specific variables for staging
+│   │   ├── kubernetes-addons         # Kubernetes add-ons for staging
+│   │   │   └── terragrunt.hcl        # Terragrunt configuration for Kubernetes add-ons
+│   │   └── vpc                       # VPC configurations for staging
+│   │       └── terragrunt.hcl        # Terragrunt configuration for VPC
+│   ├── terraform.tfstate             # Terraform state file (example, typically not versioned)
+│   └── terragrunt.hcl                # Root Terragrunt configuration
+│
+├── infrastructure-modules            # Modules for reusable infrastructure components
+│   ├── eks                           # EKS module with configurations
+│   │   ├── 0-versions.tf             # Terraform version requirement
+│   │   ├── 1-eks.tf                  # EKS resource definitions
+│   │   ├── 2-nodes-iam.tf            # IAM roles for EKS nodes
+│   │   ├── 3-nodes.tf                # EKS node groups configurations
+│   │   ├── 4-irsa.tf                 # IAM roles for service accounts (IRSA)
+│   │   ├── 5-outputs.tf              # Output variables for the EKS module
+│   │   └── 6-variables.tf            # Input variables for the EKS module
+│   ├── kubernetes-addons             # Module for Kubernetes add-ons like autoscaler
+│   │   ├── 0-versions.tf
+│   │   ├── 1-cluster-autoscaler.tf   # Cluster Autoscaler configuration
+│   │   └── 2-variables.tf            # Variables for Kubernetes add-ons module
+│   └── vpc                           # VPC module with configurations
+│       ├── 0-versions.tf
+│       ├── 1-vpc.tf                  # VPC resource definitions
+│       ├── 2-igw.tf                  # Internet Gateway configurations
+│       ├── 3-subnets.tf              # Subnets configurations
+│       ├── 4-nat.tf                  # NAT Gateway configurations
+│       ├── 5-routes.tf               # Routing tables and associations
+│       ├── 6-outputs.tf              # Output variables for the VPC module
+│       └── 7-variables.tf            # Input variables for the VPC module
+│
+├── nginx-deployment                  # Kubernetes deployment configurations for Nginx
+│   ├── config                        # Nginx configuration files
+│   │   └── nginx.conf                # Nginx configuration file
+│   ├── deployment.yaml               # Kubernetes deployment for Nginx
+│   ├── ingress.yaml                  # Ingress resource for Nginx
+│   └── service.yaml                  # Service resource for Nginx
+│
+└── README.md                         # This README file
