@@ -1,125 +1,62 @@
-### Solution Simplification for Non Production
-At the end - Show the production git repo strategies created
-Pods - on
+# DevOps Infrastructure Management with Terraform and Terragrunt
 
-## Start Here
+## Overview
 
-We''l switch using S3 Bucket and Dynamo DB table to lock our state. 
-This approach shuld be used most of the time especially when working in a team, 
-instead of relying on the local state.
+This project utilizes Terraform and Terragrunt for managing infrastructure as code (IaC) across multiple environments in AWS. The setup focuses on robustness, scalability, and team collaboration, emphasizing best practices in cloud infrastructure management.
 
+### Key Components
 
-Keeping scale in mind
-Keep data in mind
-DevOps Team Work
+- **AWS EKS**: Managed Kubernetes service for running containerized applications.
+- **VPCs and Networking**: Custom network configurations for resource isolation and security.
+- **S3 and DynamoDB**: For state management and lock mechanisms to prevent conflicts during concurrent operations.
+- **IAM Roles and Policies**: Secure access control to AWS resources.
+- **Kubernetes Add-ons**: Additional components such as the Cluster Autoscaler for managing resources efficiently.
 
-Stress:
-- Networking
-- VPCs structure
-- k8s
-- Security
+## Challenges Encountered
 
-Followiing the Documentaion:
-- AWS
-- Terraform
-- Terragrunt
-- K8s
+Work on this project spanned from Saturday evening, 16 MAR 24, 18:00, with breaks for rest, focusing on several key areas:
 
-IaC. Important. Large module should be conssidered harmful.
-It's not a good idea to define all in one module.
-Largfe modules are slow, insecure, hard to update, difficult to test.
+- **State Management**: Transitioning to using an S3 bucket and DynamoDB table for Terraform state to enhance team collaboration.
+- **Module Complexity**: Identifying issues with large, complex modules that are hard to manage, update, and test.
+- **Security and Networking**: Stressing on secure VPC structure and Kubernetes configurations.
+- **Documentation and Best Practices**: Following comprehensive guidelines from AWS, Terraform, Terragrunt, and Kubernetes.
 
+### Encountered Issues:
 
-Terragraound Abstraction.
+1. **Variable Management**: Faced issues with correctly providing and managing variables across modules and environments.
+2. **Debugging Effort**: The effort to debug and correct the configurations was significant, with uncertainty regarding success.
+3. **Provider Configuration**: Challenges in properly defining and aliasing provider configurations for multi-region deployments.
 
-DRY and maintainable Terraform code.
-Terragrunt is a thin wrapper that provides extra tools for keeping your configurations DRY, working with multiple Terraform modules, and managing remote state.
+## Solution Simplification for Non-Production
 
-Terragrunt helped me to define backend configurations just once.
+- **Decoupling**: Break down large infrastructure modules into smaller, manageable pieces.
+- **Terragrunt for DRY Configurations**: Utilize Terragrunt to keep Terraform configurations DRY and maintainable.
+- **Public Access for EKS**: Configuration allowing public access to EKS clusters for deployment from external systems.
 
-Safes a lot of time. Keep maintain DRY confurations with large ammout of invironments.
+### Git Repository Strategy
 
+For production readiness, a structured approach was created, encapsulating:
 
-EKS
+- Separate directories for live infrastructure and modules (`infrastructure-live` and `infrastructure-modules`).
+- Environment-specific configurations under `dev` and `staging` folders.
+- Isolated components like `eks`, `vpc`, and `kubernetes-addons` for modular management.
 
-infrastructure-modules/eks/1-eks.tf
-vpc_config {
-    endpoint_private_access = false
-    endpoint_public_access  = true
+## Running the Project
 
-    subnet_ids = var.subnet_ids
-  }
+The infrastructure setup can be applied using Terragrunt commands within the project folder:
 
-  I can coonect from my labtop do deploy apps:
-  endpoint_public_access  = true
-
---
-
-Helm Chart Installed
-
-k logs -f  autoscaler-aws-cluster-autoscaler-69847d7574-5jckb  -n kube-system
-All is good
-
---
-
-S3 Bucket created
-Allows to go back if something happens.
-solitics-devops-terraform-state
-arn:aws:s3:::solitics-devops-terraform-state
-
---
-
-DynamoDB
-terraform-lock-table
-
-It allows to avoid conflilcts
-While several team members try to rum Terraform simultainisouly.
-
---
-
-IAM Role Created
-Admin Access
-arn:aws:iam::864492617736:role/terraform
-
---
-
-AllowTerraform Policy is created 
-
-{
-	"Version": "2012-10-17",
-	"Statement": [
-		{
-			"Sid": "Statement",
-			"Effect": "Allow",
-			"Action": "sts:AssumeRole",
-			"Resource": "arn:aws:iam::864492617736:role/terraform"
-		}
-	]
-}
-
-New User creted
-Added to DevOps group with all the permissions
-
-solitics-user
-
-Security Credentials generated for the user 
-I'll use those credentials to create AWS local profile
-
-
-## Run
-
-In the project folder:
-
+```bash
 terragrunt init
 terragrunt run-all apply
+```
 
+To interact with the deployed EKS clusters:
+
+```bash
 aws eks update-kubeconfig --name dev-solitics-demo --region eu-west-2
 aws eks update-kubeconfig --name staging-solitics-demo --region eu-west-2
+```
 
-aws eks describe-cluster --name dev-solitics-demo --region eu-west-2 --output json
-aws eks describe-cluster --name staging-solitics-demo --region eu-west-2 --output json
+### Conclusion
 
-kubectl apply -f deployment.yaml
-kubectl get pods
-kubectl describe pod nginx-xxxx
-
+This endeavor provided a profound learning experience in managing complex cloud infrastructures using Terraform and Terragrunt. Building the project from scratch is planned, to incorporate lessons learned and establish a foundation for a more streamlined and efficient infrastructure management process.
